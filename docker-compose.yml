@@ -1,0 +1,17 @@
+version: '3.7'
+
+services:
+  my-llm-container:
+    container_name: my-llm-container
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./app:/app/src
+      - ./data:/app/data
+      - ./llm_models:/app/llm_models
+      - ./run_me.sh:/app/run_me.sh
+    ports:
+      - "5001:5000"
+    command: sh run_me.sh
+    
