@@ -15,6 +15,10 @@ They need to be downloaded separately and placed in the `llm_models` folder.
 
 - https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF/tree/main
 
+- https://medium.com/@mne/run-mistral-7b-model-on-macbook-m1-pro-with-16gb-ram-using-llama-cpp-44134694b773
+
+
+
 ## Access
 
 - start the docker and enter it

@@ -3,28 +3,23 @@ from llama_cpp import Llama
 # Set gpu_layers to the number of layers to offload to GPU. Set to 0 if no GPU acceleration is available on your system.
 llm = Llama(
   model_path="./llm_models/capybarahermes-2.5-mistral-7b.Q4_K_M.gguf",  # Download the model file first
-  n_ctx=32768,  # The max sequence length to use - note that longer sequence lengths require much more resources
-  n_threads=8,            # The number of CPU threads to use, tailor to your system and the resulting performance
-  n_gpu_layers=35         # The number of layers to offload to GPU, if you have GPU acceleration available
+  n_ctx=8192,  # The max sequence length to use - note that longer sequence lengths require much more resources
+  n_threads=2,            # The number of CPU threads to use, tailor to your system and the resulting performance
+  gpu_layers=0,           # The number of layers to offload to GPU, set to 0 if no GPU acceleration is available
+  Verbose=True,           # Set to True to enable debug logging
+  Seed=42,                 # Set to a non-zero value to seed the random number generator
 )
 
-# Simple inference example
-output = llm(
-  "<|im_start|>system\n{system_message}<|im_end|>\n<|im_start|>user\n{prompt}<|im_end|>\n<|im_start|>assistant", # Prompt
-  max_tokens=512,  # Generate up to 512 tokens
-  stop=["</s>"],   # Example stop token - not necessarily correct for this specific model! Please check before using.
-  echo=True        # Whether to echo the prompt
-)
+system = """
+Follow the instructions below to complete the task.
+"""
 
-# Chat Completion API
+user = """
+Create a PHP script to scan a directory and print the contents of the directory.
+"""
 
-llm = Llama(model_path="./capybarahermes-2.5-mistral-7b.Q4_K_M.gguf", chat_format="llama-2")  # Set chat_format according to the model you are using
-llm.create_chat_completion(
-    messages = [
-        {"role": "system", "content": "You are a story writing assistant."},
-        {
-            "role": "user",
-            "content": "Write a story about llamas."
-        }
-    ]
-)
+message = f"<s>[INST] {system} [/INST]</s>{user}"
+output = llm(message, echo=True, stream=False, max_tokens=4096)
+print(output['usage'])
+output = output['choices'][0]['text'].replace(message, '')
+print(output)
